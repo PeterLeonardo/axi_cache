@@ -1,7 +1,7 @@
 #===============================
 ## To be modified ##
 DIRS ?= vsrc testbench #directories
-USER_FILES ?= ./GitCommit.mk #single file
+USER_FILES ?= ./GitCommit.mk ./vivado_recreate.tcl ./hw/project_1/recreate_project.tcl ./hw/project_1/project_1.srcs/sources_1/ip/data_col_mem/data_col_mem.xci ./hw/project_1/project_1.srcs/sources_1/ip/tagv_col_mem/tagv_col_mem.xci #single file
 
 #===============================
 # 自动发现文件
