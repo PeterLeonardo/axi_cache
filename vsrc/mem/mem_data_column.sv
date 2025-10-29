@@ -14,6 +14,7 @@ module mem_data_column #(
     input  logic                    rst,
     input  logic [3:0]              we,
     input  logic [INDEX_BITS-1:0]   addr,
+    input  logic [INDEX_BITS-1:0]   raddr,
     input  logic [31:0]             din,
     output logic [31:0]             dout
 );
@@ -21,14 +22,14 @@ module mem_data_column #(
 //注意：INDEX_BITS参数更改时，data_col_mem的深度也要更改为2**INDEX_BITS
 
 data_col_mem data_col (
-  .clka(clk),            // input wire clka
-  .rsta(rst),            // input wire rsta
-  .wea(we),              // input wire [3 : 0] wea
-  .addra(addr),          // input wire [11 : 0] addra
-  .dina(din),            // input wire [31 : 0] dina
-  .douta(dout),          // output wire [31 : 0] douta
-  .rsta_busy()           // output wire rsta_busy
+  .clka(clk),     // input wire clka
+  .wea(we),       // input wire [3 : 0] wea
+  .addra(addr),   // input wire [11 : 0] addra
+  .dina(din),     // input wire [31 : 0] dina
+  .clkb(clk),     // input wire clkb
+  .addrb(raddr),  // input wire [11 : 0] addrb
+  .doutb(dout),   // output wire [31 : 0] doutb
+  .rstb(rst)
 );
-
 
 endmodule

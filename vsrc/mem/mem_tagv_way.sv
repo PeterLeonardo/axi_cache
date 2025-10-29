@@ -47,7 +47,7 @@ tagv_col_mem tagv_col (
   .addra(addr_in),          // input wire [11 : 0] addra
   .dina(tagv_in),            // input wire [14 : 0] dina
   .douta(dout),          // output wire [14 : 0] douta
-  .rsta_busy(rsta_busy)  // output wire rsta_busy
+  .rsta_busy()  // output wire rsta_busy
 );
 
 endmodule

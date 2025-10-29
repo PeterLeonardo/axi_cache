@@ -7,8 +7,9 @@ module mem_data_way #(
     input  logic                    clk,
     input  logic                    rst,
     input  logic [3:0]              we,
-    input  logic [31:0]             addr,
+    input  logic [31:0]             addr,//写地址
     input  logic [31:0]             din,
+    input  logic [31:0]             raddr,
     output logic [32*(1<<OFFSET_BITS)-1:0]  dout  // 位宽
 );
 
@@ -18,6 +19,7 @@ logic [1:0]             addr_bitOffset;
 logic [OFFSET_BITS-1:0] addr_offset;
 logic [INDEX_BITS-1:0]  addr_index;
 logic [TAG_BITS-1:0]    addr_tag;
+logic [INDEX_BITS-1:0]  raddr_index;
 
 logic [31:0]            din_tran;
 logic [3:0]             we_tran;
@@ -27,6 +29,8 @@ always_comb begin : addr_decode
     addr_offset     = addr[OFFSET_BITS+1:2];
     addr_index      = addr[INDEX_BITS+OFFSET_BITS+1:OFFSET_BITS+2];
     addr_tag        = addr[31:INDEX_BITS+OFFSET_BITS+2];
+
+    raddr_index     = raddr[INDEX_BITS+OFFSET_BITS+1:OFFSET_BITS+2];
 
     din_tran        = din << {addr_bitOffset, 3'b0};  // 字节移位（×8）
     we_tran         = we << addr_bitOffset;
@@ -43,8 +47,9 @@ generate
         ) data_column_inst (
             .clk(clk),
             .rst(rst),
-            .we(we_tran),
+            .we(we_tran & {4{~(|(addr_offset^column_index))}}),
             .addr(addr_index),
+            .raddr(raddr_index),
             .din(din_tran),
             .dout(dout[32*column_index+31:32*column_index])
         );
