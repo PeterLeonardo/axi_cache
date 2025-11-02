@@ -45,7 +45,6 @@ module cache_top #(
     logic [WAY_NUM-1:0]                    tagv_we;
     logic [WAY_NUM-1:0][ADDR_WIDTH-1:0]    tagv_addr_r;
     logic [WAY_NUM-1:0][ADDR_WIDTH-1:0]    tagv_addr_w;
-    logic [WAY_NUM-1:0][TAG_BITS:0]        tagv_din;
     logic [WAY_NUM-1:0][TAG_BITS:0]        tagv_dout;
 
     // 脏位接口信号
@@ -120,7 +119,6 @@ module cache_top #(
         .tagv_we(tagv_we),
         .tagv_addr_r(tagv_addr_r),
         .tagv_addr_w(tagv_addr_w),
-        .tagv_din(tagv_din),
         .tagv_dout(tagv_dout),
 
         // ---------- 脏位接口 ----------
