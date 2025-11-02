@@ -169,9 +169,9 @@ module cache_top #(
 
                 // ---------- 数据 BRAM ----------
                 .data_we(data_we[i]),
-                .data_addr(data_addr[i][INDEX_BITS-1:0]),  // 地址低位部分
+                .data_addr(data_addr[i]),  // 地址低位部分
                 .data_din(data_din[i]),
-                .data_raddr(data_raddr[i][INDEX_BITS-1:0]),
+                .data_raddr(data_raddr[i]),
                 .data_dout(data_dout[i]),
 
                 // ---------- TagV ----------

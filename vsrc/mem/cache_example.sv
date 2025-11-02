@@ -32,6 +32,23 @@ module cache_example #(
     // =========================================================================
     axi_master_if master_if(.aclk(clk), .aresetn(~rst));
 
+        // BRAM controller-side signals
+    logic        bram_rst_a, bram_rst_b;
+    logic        bram_clk_a, bram_clk_b;
+    logic        bram_en_a, bram_en_b;
+    logic [3:0]  bram_we_a, bram_we_b;
+    logic [14:0] bram_addr_a, bram_addr_b;
+    logic [31:0] bram_wrdata_a, bram_wrdata_b;
+    logic [31:0] bram_rddata_a, bram_rddata_b;
+    
+    // BRAM memory (blk_mem_gen) side signals
+    logic        blk_mem_clka, blk_mem_clkb;
+    logic        blk_mem_rsta, blk_mem_rstb;
+    logic        blk_mem_ena, blk_mem_enb;
+    logic [3:0]  blk_mem_wea, blk_mem_web;
+    logic [31:0] blk_mem_addra, blk_mem_addrb;
+    logic [31:0] blk_mem_dina, blk_mem_dinb;
+    logic [31:0] blk_mem_douta, blk_mem_doutb;
     // =========================================================================
     // DUT 实例化：cache_top
     // =========================================================================
@@ -137,7 +154,7 @@ module cache_example #(
         .rsta       (bram_rst_a),
         .ena        (bram_en_a),
         .wea        (bram_we_a),
-        .addra      (bram_addr_a),
+        .addra      ({18'b0, bram_addr_a}),
         .dina       (bram_wrdata_a),
         .douta      (bram_rddata_a),
 
@@ -145,7 +162,7 @@ module cache_example #(
         .rstb       (bram_rst_b),
         .enb        (bram_en_b),
         .web        (bram_we_b),
-        .addrb      (bram_addr_b),
+        .addrb      ({18'b0, bram_addr_b}),
         .dinb       (bram_wrdata_b),
         .doutb      (bram_rddata_b)
     );

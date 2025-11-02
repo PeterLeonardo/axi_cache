@@ -211,7 +211,7 @@ always_comb begin
         IDLE: if (start) next_state = COMPARE;
         COMPARE: begin
             if (cache_hit) begin
-                if (row_diff_buff) next_state = REREAD;
+                if (row_diff_buff && re_buff) next_state = REREAD;
                 else if (start) next_state = COMPARE;
                 else next_state = IDLE;
             end else begin
@@ -232,7 +232,7 @@ always_comb begin
         end
         RECOMPARE: begin
             if (cache_hit) begin
-                if (row_diff_buff) next_state = REREAD;
+                if (row_diff_buff && re_buff) next_state = REREAD;
                 else if (start) next_state = COMPARE;
                 else next_state = IDLE;
             end else next_state = ERROR;
@@ -266,7 +266,7 @@ always_comb begin
         COMPARE: begin
             if (cache_hit) begin
                 if (|we_buff) signal_write = 1'b1;
-                else if (row_diff_buff) signal_reread = 1'b1;
+                else if (row_diff_buff && re_buff) signal_reread = 1'b1;
             end else begin
                 if (dirty_dout[way_sel]) begin
                     signal_writeback = 1'b1;
@@ -284,7 +284,7 @@ always_comb begin
         RECOMPARE: begin
             if (cache_hit) begin
                 if (|we_buff) signal_write = 1'b1;
-                else if (row_diff_buff) signal_reread = 1'b1;
+                else if (row_diff_buff && re_buff) signal_reread = 1'b1;
             end
         end
         REREAD: begin
@@ -331,9 +331,11 @@ always_comb begin
 
     for(int i = 0; i < WAY_NUM; i = i+1) begin
         if(signal_reread) begin
-            data_raddr = addr_ahead_buff;
+            data_raddr[i] = addr_ahead_buff;
+        end else if(signal_recompare) begin
+            data_raddr[i] = addr_buff;
         end else begin
-            data_raddr = addr;
+            data_raddr[i] = addr;
         end
     end
 
@@ -363,9 +365,11 @@ always_comb begin
     // Always read the tag for current index
     for(int i = 0; i < WAY_NUM; i = i+1) begin
         if(signal_reread) begin
-            tagv_addr_r = addr_ahead_buff;
+            tagv_addr_r[i] = addr_ahead_buff;
+        end else if(signal_recompare) begin
+            tagv_addr_r[i] = addr_buff;
         end else begin
-            tagv_addr_r = addr;
+            tagv_addr_r[i] = addr;
         end
     end
 
@@ -466,7 +470,11 @@ always_comb begin
             axi_start_i = ~axi_busy_o;
             axi_wr_rd_i = 1'b0;              // read from memory
             // Align read to start of block
-            axi_addr_i = { addr_buff[31:OFFSET_BITS+2], {(OFFSET_BITS+2){1'b0}} };
+            if(signal_reallocate_hold) begin
+                axi_addr_i = { addr_ahead_buff[31:OFFSET_BITS+2], {(OFFSET_BITS+2){1'b0}} };
+            end else begin
+                axi_addr_i = { addr_buff[31:OFFSET_BITS+2], {(OFFSET_BITS+2){1'b0}} };
+            end
             axi_len_i  = (1 << OFFSET_BITS) - 1;
             axi_use_array_i = 1'b0;
         end
@@ -563,7 +571,7 @@ always_comb begin
 
         COMPARE: begin
             if (cache_hit) begin
-                if (row_diff_buff) begin
+                if (row_diff_buff && re_buff) begin
                     dout = '0;
                     done = 1'b0;
                     rvalid = 1'b0;
@@ -602,7 +610,7 @@ always_comb begin
         end
         RECOMPARE: begin
             if (cache_hit) begin
-                if (row_diff_buff) begin
+                if (row_diff_buff && re_buff) begin
                     dout = '0;
                     done = 1'b0;
                     rvalid = 1'b0;

@@ -9,9 +9,9 @@ module cache_way #(
 
     // 数据存储接口
     input  logic [3:0]              data_we,
-    input  logic [INDEX_BITS-1:0]   data_addr,
+    input  logic [31:0]             data_addr,
     input  logic [31:0]             data_din,
-    input  logic [INDEX_BITS-1:0]   data_raddr,
+    input  logic [31:0]             data_raddr,
     output logic [32*(1<<OFFSET_BITS)-1:0]  data_dout,
 
     // TagV存储接口
@@ -38,9 +38,9 @@ mem_data_way #(
     .clk(clk),
     .rst(rst),
     .we(data_we),
-    .addr({data_addr, {(32-INDEX_BITS){1'b0}}}),  // 将索引扩展为32位地址
+    .addr(data_addr),  // 将索引扩展为32位地址
     .din(data_din),
-    .raddr({data_raddr, {(32-INDEX_BITS){1'b0}}}), // 将读索引扩展为32位地址
+    .raddr(data_raddr), // 将读索引扩展为32位地址
     .dout(data_dout)
 );
 
