@@ -1,15 +1,19 @@
 #===============================
 ## To be modified ##
 DIRS ?= vsrc/axi vsrc/mem testbench #directories
-USER_FILES ?= ./GitCommit.mk ./vivado_recreate.tcl ./hw/project_1/recreate_project.tcl ./hw/project_1/project_1.srcs/sources_1/ip/data_col_mem/data_col_mem.xci ./hw/project_1/project_1.srcs/sources_1/ip/tagv_col_mem/tagv_col_mem.xci #single file
+XCIS ?= tagv_col_mem data_col_mem blk_mem_gen_0 axi_bram_ctrl_0
+#single file
+USER_FILES ?= ./GitCommit.mk ./vivado_recreate.tcl ./hw/project_1/recreate_project.tcl ./hw/files/
 
 #===============================
 # 自动发现文件
 AUTO_V_FILES := $(foreach dir,$(DIRS),$(wildcard $(dir)/*.v))
 AUTO_SV_FILES := $(foreach dir,$(DIRS),$(wildcard $(dir)/*.sv))
 AUTO_SVH_FILES := $(foreach dir,$(DIRS),$(wildcard $(dir)/*.svh))
+AUTO_XCI_FILES := $(foreach xcis,$(XCIS),$(wildcard ./hw/project_1/project_1.srcs/sources_1/ip/$(xcis)/$(xcis).xci))
+AUTO_TEST_FILES := $(wildcard ./hw/files/*)
 
-AUTO_FILES := $(AUTO_V_FILES) $(AUTO_SV_FILES) $(AUTO_SVH_FILES)
+AUTO_FILES := $(AUTO_V_FILES) $(AUTO_SV_FILES) $(AUTO_SVH_FILES) $(AUTO_XCI_FILES) $(AUTO_TEST_FILES)
 
 ALL_FILES := $(USER_FILES) $(AUTO_V_FILES) $(AUTO_SV_FILES) $(AUTO_SVH_FILES)
 BUILD_TIMESTAMP := $(shell powershell -Command "Get-Date -Format 'yyyyMMdd_HHmmss'")
