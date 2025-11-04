@@ -348,11 +348,11 @@ always_comb begin
         data_din[way_hit_int]   = din_buff;
     end else if(curr_state==ALLOCATE && ~signal_reallocate_hold) begin
         data_we[way_sel_buff]   = 4'b1111 & {4{axi_data_valid_o}};
-        data_addr[way_sel_buff] = {addr_buff[31:2] , 2'b00} + {burst_cnt[$clog2(MAX_BURST_LEN)-1:0] , 2'b00};
+        data_addr[way_sel_buff] = {addr_buff[31:$clog2(MAX_BURST_LEN)+2], burst_cnt[$clog2(MAX_BURST_LEN)-1:0] , 2'b00};
         data_din[way_sel_buff]  = axi_data_o;
     end else if(curr_state==ALLOCATE && signal_reallocate_hold) begin
         data_we[way_sel_buff]   = 4'b1111 & {4{axi_data_valid_o}};
-        data_addr[way_sel_buff] = {addr_ahead_buff[31:2] , 2'b00} + {burst_cnt[$clog2(MAX_BURST_LEN)-1:0] , 2'b00};
+        data_addr[way_sel_buff] = {addr_ahead_buff[31:$clog2(MAX_BURST_LEN)+2], burst_cnt[$clog2(MAX_BURST_LEN)-1:0] , 2'b00};
         data_din[way_sel_buff]  = axi_data_o;
     end
 end
@@ -596,7 +596,7 @@ always_comb begin
         REREAD: begin
             if (cache_hit) begin
                 dout = join_two_lines(data_dout[way_hit_int], data_reread_buff, offset, byte_offset);
-                done = 1'b0;
+                done = 1'b1;
                 rvalid = 1'b1;
                 error = 1'b0;
                 busy = 1'b0;

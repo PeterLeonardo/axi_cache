@@ -3,7 +3,7 @@
 DIRS ?= vsrc/axi vsrc/mem testbench #directories
 XCIS ?= tagv_col_mem data_col_mem blk_mem_gen_0 axi_bram_ctrl_0
 #single file
-USER_FILES ?= ./GitCommit.mk ./vivado_recreate.tcl ./hw/project_1/recreate_project.tcl ./hw/files/
+USER_FILES ?= ./GitCommit.mk ./vivado_recreate.tcl ./hw/project_1/recreate_project.tcl ./hw/project_1/target_info.txt
 
 #===============================
 # 自动发现文件
@@ -11,7 +11,7 @@ AUTO_V_FILES := $(foreach dir,$(DIRS),$(wildcard $(dir)/*.v))
 AUTO_SV_FILES := $(foreach dir,$(DIRS),$(wildcard $(dir)/*.sv))
 AUTO_SVH_FILES := $(foreach dir,$(DIRS),$(wildcard $(dir)/*.svh))
 AUTO_XCI_FILES := $(foreach xcis,$(XCIS),$(wildcard ./hw/project_1/project_1.srcs/sources_1/ip/$(xcis)/$(xcis).xci))
-AUTO_TEST_FILES := $(wildcard ./hw/files/*)
+AUTO_TEST_FILES := $(wildcard ./hw/files/*) $(wildcard ./hw/tools/compare/*) $(wildcard ./hw/tools/virtual_mem/*) $(wildcard ./hw/data)
 
 AUTO_FILES := $(AUTO_V_FILES) $(AUTO_SV_FILES) $(AUTO_SVH_FILES) $(AUTO_XCI_FILES) $(AUTO_TEST_FILES)
 

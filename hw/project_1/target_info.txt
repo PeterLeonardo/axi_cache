@@ -1,0 +1,3 @@
+VIVADO: 2023.2
+PART:   xc7k325tffg900-2
+BOARD:  

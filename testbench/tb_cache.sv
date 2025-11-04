@@ -115,25 +115,27 @@ module tb_cache;
                 @(posedge clk);
 
                 // 当 cache 不忙时，从文件读一行
-                if (!busy && !$feof(fin)) begin
-                    rv = $fscanf(fin, "%d %b %h %h\n", re_i, we_i, addr_i, din_i);
-                    $display("%d %b %h %h\n", re_i, we_i, addr_i, din_i);
-                    if (rv == 4) begin
-                        re   <= re_i;
-                        we   <= we_i;
-                        addr <= addr_i;
-                        din  <= din_i;
+                if (!busy) begin
+                    if (!$feof(fin)) begin
+                        rv = $fscanf(fin, "%d %b %h %h\n", re_i, we_i, addr_i, din_i);
+                        $display("%d %b %h %h\n", re_i, we_i, addr_i, din_i);
+                        if (rv == 4) begin
+                            re   <= re_i;
+                            we   <= we_i;
+                            addr <= addr_i;
+                            din  <= din_i;
+                        end else begin
+                            re   <= 0;
+                            we   <= 0;
+                        end
                     end else begin
-                        re   <= 0;
-                        we   <= 0;
+                        addr <= addr;
+                        din <= din;
+                        re <= 0;
+                        we <= 0;
+                        $finish;
                     end
-                end else if ($feof(fin)) begin
-                    addr <= addr;
-                    din <= din;
-                    re <= re;
-                    we <= we;
                 end
-
                 // 当 done=1 时写出结果
                 if (done) begin
                     $fdisplay(fout, "%h %0d", dout, rvalid);
@@ -147,14 +149,14 @@ module tb_cache;
     // ==========================================================
     initial begin
         $display(">>> 仿真开始 <<<\n");
-        run_test("../../../../../files/input.txt", "../../../../../files/output.txt");
+        run_test("../../../../../files/input.txt", "../../../../../data/output.txt");
     end
 
     // ==========================================================
     // 仿真超时保护
     // ==========================================================
     initial begin
-        #2000000;
+        #200000000;
         $display(">>> 仿真超时结束 <<<");
         $finish;
     end
